@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<script type="text/javascript" src="./smoothie.js"></script>
+	<script type="text/javascript">
+
+	const ws = new WebSocket('ws://localhost:9003');
+	
+	var random = new TimeSeries();
+
+
+	function genRandom(){
+		var random = Math.floor(Math.random() * 1000);
+		return random;
+	}
+	ws.onopen = function(w) {
+		console.log('opened');
+		
+	}
+	ws.onmessage = function(msg){
+		if(msg.data){
+			var actData = JSON.parse(msg.data);
+			random.append(actData.time, actData.message);
+		}
+	}
+
+	function startSending(){
+		setInterval(function(){
+			var ran = genRandom();
+			ws.send(ran);
+		}, 1000);		
+	}
+
+	function createTimeline() {
+        var chart = new SmoothieChart({millisPerPixel:54,timestampFormatter:SmoothieChart.timeFormatter});
+        chart.addTimeSeries(random, { strokeStyle: 'rgba(0, 255, 0, 1)', fillStyle: 'rgba(0, 255, 0, 0.2)', lineWidth: 4 });
+        chart.streamTo(document.getElementById("chart"), 500);
+      }
+
+</script>
+
+</head>
+<body onload="createTimeline()">
+
+
+    <canvas id="chart" width="400" height="100"></canvas>
+
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+	<button onclick="startSending()">Start</button>
+
+<script type="text/javascript">
+
+	const ws = new WebSocket('ws://localhost:9003');
+	
+
+
+	function genRandom(){
+		var random = Math.floor(Math.random() * 1000);
+		return random;
+	}
+	ws.onopen = function(w) {
+		console.log('opened');
+		
+	}
+
+	function startSending(){
+		setInterval(function(){
+			var ran = genRandom();
+			ws.send(ran);
+		}, 3000);		
+	}
+
+</script>
+
+</body>
+</html>
